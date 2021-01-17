@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: divide-python-pod
+  labels:
+    app: divide-python
+
+spec:
+  containers:
+    - name: divide-python
+      image: thomaspilgaard/divide-python:1
+      ports:
+        - containerPort: 5000
+      resources:
+        limits:
+          memory: "64Mi"
+          cpu: "250m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: divide-python-service
+spec:
+  selector:
+    app: divide-python
+  type: NodePort
+
+  ports:
+    - protocol: TCP
+      port: 30162 # internal cluster port
+      targetPort: 5000 # container port to sent requests to
+      nodePort: 30163 # static port assigned to each node
